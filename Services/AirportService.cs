@@ -1,3 +1,4 @@
+using AmadeusFlightApý.Dtos;
 using AmadeusFlightApý.Models;
 using AmadeusFlightApý.Repositories;
 
@@ -11,24 +12,35 @@ namespace AmadeusFlightApý.Services
             _airportRepository = airportRepository;
         }
 
-        public async Task<IEnumerable<Airport>> GetAllAsync() => await _airportRepository.GetAllAsync();
-
-        public async Task<Airport?> GetByIdAsync(Guid id) => await _airportRepository.GetByIdAsync(id);
-
-        public async Task<Airport> CreateAsync(Airport airport)
+        public async Task<IEnumerable<AirportDto>> GetAllAsync()
         {
-            airport.Id = Guid.NewGuid();
-            await _airportRepository.AddAsync(airport);
-            await _airportRepository.SaveChangesAsync();
-            return airport;
+            var airports = await _airportRepository.GetAllAsync();
+            return airports.Select(a => new AirportDto { Id = a.Id, City = a.City });
         }
 
-        public async Task<Airport?> UpdateAsync(Guid id, Airport airport)
+        public async Task<AirportDto?> GetByIdAsync(Guid id)
         {
-            if (id != airport.Id) return null;
+            var airport = await _airportRepository.GetByIdAsync(id);
+            if (airport == null) return null;
+            return new AirportDto { Id = airport.Id, City = airport.City };
+        }
+
+        public async Task<AirportDto> CreateAsync(CreateAirportDto dto)
+        {
+            var airport = new Airport { Id = Guid.NewGuid(), City = dto.City };
+            await _airportRepository.AddAsync(airport);
+            await _airportRepository.SaveChangesAsync();
+            return new AirportDto { Id = airport.Id, City = airport.City };
+        }
+
+        public async Task<AirportDto?> UpdateAsync(Guid id, UpdateAirportDto dto)
+        {
+            var airport = await _airportRepository.GetByIdAsync(id);
+            if (airport == null) return null;
+            airport.City = dto.City;
             _airportRepository.Update(airport);
             await _airportRepository.SaveChangesAsync();
-            return airport;
+            return new AirportDto { Id = airport.Id, City = airport.City };
         }
 
         public async Task<bool> DeleteAsync(Guid id)

@@ -1,3 +1,4 @@
+using AmadeusFlightApý.Dtos;
 using AmadeusFlightApý.Models;
 using AmadeusFlightApý.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,35 +16,35 @@ namespace AmadeusFlightApý.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GenericResponse<IEnumerable<Airport>>>> GetAirports()
+        public async Task<ActionResult<GenericResponse<IEnumerable<AirportDto>>>> GetAirports()
         {
             var airports = await _airportService.GetAllAsync();
-            return Ok(GenericResponse<IEnumerable<Airport>>.SuccessResponse(airports));
+            return Ok(GenericResponse<IEnumerable<AirportDto>>.SuccessResponse(airports));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GenericResponse<Airport>>> GetAirport(Guid id)
+        public async Task<ActionResult<GenericResponse<AirportDto>>> GetAirport(Guid id)
         {
             var airport = await _airportService.GetByIdAsync(id);
             if (airport == null)
-                return NotFound(GenericResponse<Airport>.ErrorResponse($"Airport with id {id} not found."));
-            return Ok(GenericResponse<Airport>.SuccessResponse(airport));
+                return NotFound(GenericResponse<AirportDto>.ErrorResponse($"Airport with id {id} not found."));
+            return Ok(GenericResponse<AirportDto>.SuccessResponse(airport));
         }
 
         [HttpPost]
-        public async Task<ActionResult<GenericResponse<Airport>>> CreateAirport(Airport airport)
+        public async Task<ActionResult<GenericResponse<AirportDto>>> CreateAirport([FromBody] CreateAirportDto dto)
         {
-            var created = await _airportService.CreateAsync(airport);
-            return CreatedAtAction(nameof(GetAirport), new { id = created.Id }, GenericResponse<Airport>.SuccessResponse(created, "Airport created successfully."));
+            var created = await _airportService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetAirport), new { id = created.Id }, GenericResponse<AirportDto>.SuccessResponse(created, "Airport created successfully."));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<GenericResponse<Airport>>> UpdateAirport(Guid id, Airport airport)
+        public async Task<ActionResult<GenericResponse<AirportDto>>> UpdateAirport(Guid id, [FromBody] UpdateAirportDto dto)
         {
-            var updated = await _airportService.UpdateAsync(id, airport);
+            var updated = await _airportService.UpdateAsync(id, dto);
             if (updated == null)
-                return BadRequest(GenericResponse<Airport>.ErrorResponse("Id mismatch or airport not found."));
-            return Ok(GenericResponse<Airport>.SuccessResponse(updated, "Airport updated successfully."));
+                return BadRequest(GenericResponse<AirportDto>.ErrorResponse("Id mismatch or airport not found."));
+            return Ok(GenericResponse<AirportDto>.SuccessResponse(updated, "Airport updated successfully."));
         }
 
         [HttpDelete("{id}")]
