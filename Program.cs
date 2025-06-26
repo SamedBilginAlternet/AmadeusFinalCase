@@ -20,7 +20,6 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddHostedService<FlightImportBackgroundService>();
 
 builder.Services.AddAuthentication(options =>
 {

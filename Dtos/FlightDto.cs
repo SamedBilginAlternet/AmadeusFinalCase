@@ -1,6 +1,6 @@
 using System;
 
-namespace AmadeusFlightApý.Dtos
+namespace AmadeusFlightApi.Dtos
 {
     public class FlightDto
     {
