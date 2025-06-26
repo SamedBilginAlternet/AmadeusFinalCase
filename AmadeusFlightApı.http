@@ -1,0 +1,6 @@
+@AmadeusFlightApı_HostAddress = http://localhost:5134
+
+GET {{AmadeusFlightApı_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
